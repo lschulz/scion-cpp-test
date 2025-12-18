@@ -51,7 +51,7 @@ jobs:
         with:
           repository: 'scionproto/scion'
           path: 'scion'
-        ref: v0.14.0
+          ref: v0.14.0
       - name: Build SCION
         working-directory: '${{ github.workspace }}/scion'
         run: >

@@ -52,7 +52,7 @@ class _UdpEcho:
             "--sciond", "127.0.0.27:30255",
             "--local", "127.0.0.1",
             "--remote", "1-ff00:0:112,127.0.0.1:32000"
-        ], stdout=PIPE, check=True)
+        ], stdout=PIPE, check=True, timeout=1) # there is no built-in timeout in echo-udp-async-c
         self.assertEqual(res.stdout.decode(),
             "Received 6 bytes from 1-ff00:0:112,127.0.0.1:32000:\n"
             "Hello!\n")
@@ -65,7 +65,7 @@ class _UdpEcho:
             "--sciond", "127.0.0.19:30255",
             "--local", "127.0.0.1",
             "--remote", "1-ff00:0:112,127.0.0.1:32000"
-        ], stdout=PIPE, check=True)
+        ], stdout=PIPE, check=True, timeout=1) # there is no built-in timeout in echo-udp-async-c
         self.assertEqual(res.stdout.decode(),
             "Received 6 bytes from 1-ff00:0:112,127.0.0.1:32000:\n"
             "Hello!\n")

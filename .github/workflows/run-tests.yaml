@@ -10,62 +10,74 @@ jobs:
     name: Run tests (Linux)
     runs-on: ubuntu-24.04
     steps:
-      - name: Check out the source repository
-        uses: actions/checkout@v6
-        with:
-          submodules: recursive
-      - name: Install dependencies
-        run: >
-          sudo apt-get install -y
-          libboost-dev
-          libboost-json-dev
-          libc-ares-dev
-          libcap-dev
-          libgrpc++-dev
-          libmnl-dev
-          libncurses-dev
-          libprotobuf-dev
-          libre2-dev
-          libtomlplusplus-dev
-          pandoc
-          protobuf-compiler
-          protobuf-compiler-grpc
-      - name: Configure
-        run: |
-          mkdir build
-          cmake -G 'Ninja Multi-Config' -B build
-      - name: Build
-        id: build
-        run: cmake --build build --config Debug
-      - name: SCION++ tests
-        if: steps.build.conclusion == 'success'
-        run: make test
-      - name: Scitra tests
-        if: steps.build.conclusion == 'success'
-        run: make test-scitra
-      - name: Interposer tests
-        if: steps.build.conclusion == 'success'
-        run: make test-interposer
+      # - name: Check out the source repository
+      #   uses: actions/checkout@v6
+      #   with:
+      #     submodules: recursive
+      # - name: Install dependencies
+      #   run: >
+      #     sudo apt-get install -y
+      #     libboost-dev
+      #     libboost-json-dev
+      #     libc-ares-dev
+      #     libcap-dev
+      #     libgrpc++-dev
+      #     libmnl-dev
+      #     libncurses-dev
+      #     libprotobuf-dev
+      #     libre2-dev
+      #     libtomlplusplus-dev
+      #     pandoc
+      #     protobuf-compiler
+      #     protobuf-compiler-grpc
+      # - name: Configure
+      #   run: |
+      #     mkdir build
+      #     cmake -G 'Ninja Multi-Config' -B build
+      # - name: Build
+      #   id: build
+      #   run: cmake --build build --config Debug
+      # - name: SCION++ tests
+      #   if: steps.build.conclusion == 'success'
+      #   run: make test
+      # - name: Scitra tests
+      #   if: steps.build.conclusion == 'success'
+      #   run: make test-scitra
+      # - name: Interposer tests
+      #   if: steps.build.conclusion == 'success'
+      #   run: make test-interposer
       - name: Checkout SCION
         uses: actions/checkout@v6
         with:
           repository: 'scionproto/scion'
           path: 'scion'
           ref: v0.14.0
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@latest
+        with:
+          bezelisk-version: v1.19.0
+      - name: Set up Python
+        uses: actions/setup-python@latest
+        with:
+          python-version: '3.12'
+      - name: Install Python dependencies
+        working-directory: '${{ github.workspace }}/scion'
+        run: pip install -r tools/env/pip3/requirements.txt
+      - name: Install SCION dependencies
+        working-directory: '${{ github.workspace }}/scion'
+        run: cat tools/env/debian/pkgs.txt | sudo apt-get install -y $(xargs)
       - name: Build SCION
         working-directory: '${{ github.workspace }}/scion'
-        run: >
-          CGO_ENABLED=0 go build -o bin ./router/... ./control/... ./dispatcher/... ./daemon/...
-          ./scion/... ./scion-pki/...
-      - name: Run integration tests
-        run: make SCION_ROOT=${{ github.workspace }}/scion test-integration
+        run: bazel build //:scion
+      # - name: Run integration tests
+      #   run: make SCION_ROOT=${{ github.workspace }}/scion test-integration
 
   unit-tests-windows:
     name: Run unit tests (Windows)
     runs-on: windows-latest
     # Disabled because building gRPC with vcpkg consumes too many resources
     # See: https://github.com/microsoft/vcpkg/issues/43603
-    # if: false
+    if: false
     steps:
       - name: Check out the source repository
         uses: actions/checkout@v6

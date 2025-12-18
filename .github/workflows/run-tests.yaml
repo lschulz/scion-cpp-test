@@ -55,11 +55,14 @@ jobs:
       - name: Set up Bazel
         uses: bazel-contrib/setup-bazel@0.16.0
         with:
-          bezelisk-version: v1.19.0
+          bazelisk-version: v1.19.0
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
       - name: Set up Python
         uses: actions/setup-python@v6.1.0
         with:
-          python-version: '3.12'
+          python-version: 3.12
+          cache: pip
       - name: Install Python dependencies
         working-directory: '${{ github.workspace }}/scion'
         run: pip install -r tools/env/pip3/requirements.txt

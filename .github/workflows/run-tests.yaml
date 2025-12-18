@@ -87,7 +87,7 @@ jobs:
     runs-on: windows-latest
     # Disabled because building gRPC with vcpkg consumes too many resources
     # See: https://github.com/microsoft/vcpkg/issues/43603
-    # if: false
+    if: false
     steps:
       - name: Check out the source repository
         uses: actions/checkout@v6

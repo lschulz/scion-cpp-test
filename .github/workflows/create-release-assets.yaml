@@ -39,10 +39,13 @@ jobs:
       - name: Build deb packages
         run: make deb
       - name: Combine checksum files
-        run: cat out/*.sha256 > out/checksum.sha256
+        run: cat out/*.sha256 > out/checksums.sha256
       - name: Upload release assets
         uses: softprops/action-gh-release@v2.5.0
         with:
+          overwrite_files: false
+          preserve_order: true
+          generate_release_notes: false
           files: |
             out/*.deb
             out/checksum.sha256

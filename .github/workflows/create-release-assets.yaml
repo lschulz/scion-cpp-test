@@ -9,6 +9,8 @@ jobs:
   build:
     name: Create release assets
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     steps:
       - name: Check out the source repository
         uses: actions/checkout@v6

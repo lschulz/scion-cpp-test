@@ -31,11 +31,13 @@ class _UdpEcho:
         self.command = Path(build_dir) / "examples/c/Debug/" / command
 
     def setUp(self):
+        # The server expects a tty, allocate a pseudo-tty with socat.
         self.server = subprocess.Popen([
-            self.command,
-            "--sciond", "127.0.0.27:30255",
-            "--local", "127.0.0.1:32000"
-        ], stdout=DEVNULL)
+            "socat", "open:/dev/zero", "exec:'{} {}',pty,setsid".format(
+                self.command,
+                "--sciond 127.0.0.27:30255 --local 127.0.0.1:32000"
+            )
+        ], stderr=DEVNULL)
         time.sleep(0.2)
 
     def tearDown(self):
@@ -50,7 +52,7 @@ class _UdpEcho:
             "--sciond", "127.0.0.27:30255",
             "--local", "127.0.0.1",
             "--remote", "1-ff00:0:112,127.0.0.1:32000"
-        ], stdout=PIPE, check=True)
+        ], stdout=PIPE, check=True, timeout=1) # there is no built-in timeout in echo-udp-async-c
         self.assertEqual(res.stdout.decode(),
             "Received 6 bytes from 1-ff00:0:112,127.0.0.1:32000:\n"
             "Hello!\n")
@@ -63,7 +65,7 @@ class _UdpEcho:
             "--sciond", "127.0.0.19:30255",
             "--local", "127.0.0.1",
             "--remote", "1-ff00:0:112,127.0.0.1:32000"
-        ], stdout=PIPE, check=True)
+        ], stdout=PIPE, check=True, timeout=1) # there is no built-in timeout in echo-udp-async-c
         self.assertEqual(res.stdout.decode(),
             "Received 6 bytes from 1-ff00:0:112,127.0.0.1:32000:\n"
             "Hello!\n")

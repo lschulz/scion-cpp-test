@@ -44,7 +44,6 @@ jobs:
         uses: softprops/action-gh-release@v2.5.0
         with:
           overwrite_files: false
-          preserve_order: true
           generate_release_notes: false
           files: |
             out/*.deb

@@ -93,8 +93,8 @@ cmake -G 'Ninja Multi-Config' -B build -DCMAKE_INSTALL_PREFIX=example
 
 ### Build Debian Packages with CPack
 
-When building DEB packages `CPACK_SET_DESTDIR` must be set during the configuration step to
-correctly install configuration files in /etc/scion. If `CPACK_SET_DESTDIR` is not set, the DEB
+When building deb packages `CPACK_SET_DESTDIR` must be set during the configuration step to
+correctly install configuration files in /etc/scion. If `CPACK_SET_DESTDIR` is not set, the deb
 packages will incorrectly install configuration files in /usr/etc/scion. `CPACK_SET_DESTDIR` is not
 set by default because it also results in the generated build-system's install target to install
 configuration files to /etc/scion ignoring `CMAKE_INSTALL_PREFIX`.
@@ -102,7 +102,7 @@ configuration files to /etc/scion ignoring `CMAKE_INSTALL_PREFIX`.
 Background: In order to install to /etc/scion an absolute path is given to `install()`, using
 a relative path or `CMAKE_INSTALL_SYSCONFDIR` results in a path prefixed with /usr. Using an
 absolute path is not a perfect solution however, since absolute paths only work for the
-DEB packages not necessarily for other CPack generators or manual installation.
+deb packages not necessarily for other CPack generators or manual installation.
 
 ```bash
 mkdir build

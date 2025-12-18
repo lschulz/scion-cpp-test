@@ -34,7 +34,7 @@ jobs:
         run: |
           mkdir build
           cmake -G 'Ninja Multi-Config' -B build -DCPACK_SET_DESTDIR=ON -DCMAKE_INSTALL_PREFIX=/ -DRELEASE=YES
-      - name: Build DEB packages
+      - name: Build deb packages
         run: make deb
       - name: Combine checksum files
         run: cat out/*.sha256 > out/checksum.sha256

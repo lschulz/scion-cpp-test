@@ -48,4 +48,4 @@ jobs:
           generate_release_notes: false
           files: |
             out/*.deb
-            out/checksum.sha256
+            out/checksums.sha256

@@ -10,6 +10,7 @@ PYTHONPATH := $(PYTHONPATH):$(SRC_ROOT)/python
 TEST_DATA=$(addsuffix .bin,$(basename $(shell find tests scitra/tests -name '*.py')))
 MAN_PAGES=$(addsuffix .gz,$(basename $(shell find scitra interposer -name '*.*.md')))
 
+
 # Build library and examples
 
 .PHONY: release-shared

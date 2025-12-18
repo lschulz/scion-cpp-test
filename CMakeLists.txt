@@ -67,12 +67,16 @@ find_package(Boost CONFIG REQUIRED COMPONENTS json)
 
 find_package(protobuf CONFIG)
 
-if (Protobuf_FOUND)
+# Assume protobuf has been found even if Protobuf_FOUND is false when building
+# on Windows. FindProtobuf.cmake sets Protobuf_FOUND to false even if protobuf
+# works.
+if (Protobuf_FOUND OR WIN32)
 
     set(GRPC_LIBS protobuf::libprotobuf)
 
 else()
 
+    message("Protobuf not found")
     find_package(PkgConfig)
     pkg_check_modules(protobuf REQUIRED IMPORTED_TARGET protobuf)
 
@@ -93,6 +97,7 @@ if (gRPC_FOUND)
 
 else()
 
+    message("gRPC not found")
     find_package(PkgConfig)
     pkg_check_modules(grpc++ REQUIRED IMPORTED_TARGET grpc++)
     pkg_check_modules(grpc REQUIRED IMPORTED_TARGET grpc)
@@ -319,8 +324,14 @@ target_sources(scion-c
         "include/scion/scion.h"
 )
 target_link_libraries(scion-c PRIVATE scion-cpp)
+if (WIN32)
+    target_link_libraries(scion-c INTERFACE Ws2_32.lib)
+endif()
 set_target_properties(scion-c PROPERTIES
     OUTPUT_NAME "scionc"
+    # Rename import library file on DLL platforms (Windows) to avoid name
+    # conflict with static library.
+    ARCHIVE_OUTPUT_NAME "scionc-import"
     DEBUG_POSTFIX "d"
     VERSION "0.0.1"
     SOVERSION "0"
@@ -373,7 +384,7 @@ set(SRC_TEST
 )
 
 add_executable(unit-tests ${SRC_TEST})
-target_link_libraries(unit-tests PRIVATE gtest gmock scion-cpp scion-c)
+target_link_libraries(unit-tests PRIVATE gtest gmock scion-cpp scion-c-static)
 target_include_directories(unit-tests
     PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/tests"
     PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/generated"

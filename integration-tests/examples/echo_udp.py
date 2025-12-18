@@ -31,11 +31,13 @@ class _UdpEcho:
         self.command = Path(build_dir) / "examples/Debug/" / command
 
     def setUp(self):
+        # The server expects a tty, allocate a pseudo-tty with socat.
         self.server = subprocess.Popen([
-            self.command,
-            "--sciond", "127.0.0.27:30255",
-            "--local", "127.0.0.1:32000"
-        ], stdout=DEVNULL)
+            "socat", "open:/dev/null", "exec:'{} {}',pty".format(
+                self.command,
+                "--sciond 127.0.0.27:30255 --local 127.0.0.1:32000"
+            )
+        ], stderr=DEVNULL)
         time.sleep(0.2)
 
     def tearDown(self):

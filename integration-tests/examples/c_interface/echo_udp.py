@@ -33,12 +33,12 @@ class _UdpEcho:
     def setUp(self):
         # The server expects a tty, allocate a pseudo-tty with socat.
         self.server = subprocess.Popen([
-            "socat", "open:/dev/zero", "exec:'{} {}',pty,setsid".format(
+            "script", "-q", "-c", "{} {}".format(
                 self.command,
                 "--sciond 127.0.0.27:30255 --local 127.0.0.1:32000"
-            )
-        ], stderr=DEVNULL)
-        time.sleep(0.2)
+            ), "/dev/null"
+        ], stdout=DEVNULL, stderr=DEVNULL)
+        time.sleep(0.5)
 
     def tearDown(self):
         self.server.terminate()

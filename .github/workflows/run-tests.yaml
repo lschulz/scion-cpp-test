@@ -68,7 +68,7 @@ jobs:
         run: pip install -r tools/env/pip3/requirements.txt
       - name: Install SCION dependencies
         working-directory: '${{ github.workspace }}/scion'
-        run: cat tools/env/debian/pkgs.txt | sudo apt-get install -y $(xargs)
+        run: cat tools/env/debian/pkgs.txt | sudo apt-get install -y $(xargs) socat
       - name: Disable Bazel remote cache
         working-directory: '${{ github.workspace }}/scion'
         run: sed '/remote_cache/s/^/#/g' .bazelrc | sponge .bazelrc

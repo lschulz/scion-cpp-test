@@ -6,8 +6,8 @@ on:
   pull_request:
 
 jobs:
-  unit-tests:
-    name: Run unit tests
+  unit-tests-linux:
+    name: Run unit tests (Linux)
     runs-on: ubuntu-24.04
     steps:
       - name: Check out the source repository
@@ -17,8 +17,6 @@ jobs:
       - name: Install dependencies
         run: >
           sudo apt-get install -y
-          build-essential
-          cmake
           libboost-dev
           libboost-json-dev
           libc-ares-dev
@@ -49,3 +47,30 @@ jobs:
       - name: Interposer tests
         if: steps.build.conclusion == 'success'
         run: make test-interposer
+
+  unit-tests-windows:
+    name: Run unit tests (Windows)
+    runs-on: windows-latest
+    steps:
+      - name: Check out the source repository
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - name: Get CMake and Ninja
+        uses: lukka/get-cmake@latest
+      - name: Install dependencies with vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: a20d95d3c76906363896754eb1cc93db2a694f16
+      - name: Build
+        id: build
+        uses: lukka/run-cmake@10
+        with:
+          configurePreset: vcpkg-vs
+          buildPresetAdditionalArgs: "['--config Debug']"
+      - name: SCION++ tests
+        if: steps.build.conclusion == 'success'
+        run: make test
+      - name: Scitra tests
+        if: steps.build.conclusion == 'success'
+        run: make test-scitra

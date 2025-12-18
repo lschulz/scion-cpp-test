@@ -39,13 +39,13 @@ jobs:
         run: cmake --build build --config Debug
       - name: SCION++ tests
         if: steps.build.conclusion == 'success'
-        run: make test
+        run: timeout 5 make test
       - name: Scitra tests
         if: steps.build.conclusion == 'success'
-        run: make test-scitra
+        run: timeout 5 make test-scitra
       - name: Interposer tests
         if: steps.build.conclusion == 'success'
-        run: make test-interposer
+        run: timeout 5 make test-interposer
       - name: Checkout SCION
         uses: actions/checkout@v6
         with:

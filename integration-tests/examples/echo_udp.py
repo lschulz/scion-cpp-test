@@ -33,7 +33,7 @@ class _UdpEcho:
     def setUp(self):
         # The server expects a tty, allocate a pseudo-tty with socat.
         self.server = subprocess.Popen([
-            "socat", "open:/dev/null", "exec:'{} {}',pty".format(
+            "socat", "open:/dev/zero", "exec:'{} {}',pty".format(
                 self.command,
                 "--sciond 127.0.0.27:30255 --local 127.0.0.1:32000"
             )

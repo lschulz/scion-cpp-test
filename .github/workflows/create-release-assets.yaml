@@ -3,7 +3,7 @@ name: Create release assets
 on:
   release:
     types:
-      - created
+      - published
 
 jobs:
   build:

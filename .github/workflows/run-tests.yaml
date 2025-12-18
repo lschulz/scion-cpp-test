@@ -3,11 +3,12 @@ name: Run tests
 on:
   push:
     branch: main
+    tags-ignore: ['*']
   pull_request:
 
 jobs:
   tests-linux:
-    name: Run tests (Linux)
+    name: Run tests (Ubuntu)
     runs-on: ubuntu-24.04
     steps:
       - name: Check out the source repository

@@ -1,0 +1,45 @@
+name: Run tests
+
+on:
+  push:
+    branch: main
+  pull_request:
+
+jobs:
+  unit-tests:
+    name: Run unit tests
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the source repository
+        uses: actions/checkout@v6
+        submodules: recursive
+      - name: Install dependencies
+        run: sudo apt-get install -y \
+          build-essential \
+          cmake \
+          libboost-dev \
+          libboost-json-dev \
+          libc-ares-dev \
+          libcap-dev \
+          libgrpc++-dev \
+          libmnl-dev \
+          libncurses-dev \
+          libprotobuf-dev \
+          libre2-dev \
+          libtomlplusplus-dev \
+          ninja-build \
+          pandoc \
+          protobuf-compiler \
+          protobuf-compiler-grpc
+      - name: Configure
+        run: |
+          mkdir build
+          cmake -G 'Ninja' -B build -DCMAKE_BUILD_TYPE=Debug
+      - name: Build
+        run: cmake --build build
+      - name: SCION++ tests
+        run: make test
+      - name: Scitra tests
+        run: make test-scitra
+      - name: Interposer tests
+        run: make test-interposer

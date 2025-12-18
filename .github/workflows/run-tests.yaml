@@ -10,42 +10,42 @@ jobs:
     name: Run tests (Linux)
     runs-on: ubuntu-24.04
     steps:
-      # - name: Check out the source repository
-      #   uses: actions/checkout@v6
-      #   with:
-      #     submodules: recursive
-      # - name: Install dependencies
-      #   run: >
-      #     sudo apt-get install -y
-      #     libboost-dev
-      #     libboost-json-dev
-      #     libc-ares-dev
-      #     libcap-dev
-      #     libgrpc++-dev
-      #     libmnl-dev
-      #     libncurses-dev
-      #     libprotobuf-dev
-      #     libre2-dev
-      #     libtomlplusplus-dev
-      #     pandoc
-      #     protobuf-compiler
-      #     protobuf-compiler-grpc
-      # - name: Configure
-      #   run: |
-      #     mkdir build
-      #     cmake -G 'Ninja Multi-Config' -B build
-      # - name: Build
-      #   id: build
-      #   run: cmake --build build --config Debug
-      # - name: SCION++ tests
-      #   if: steps.build.conclusion == 'success'
-      #   run: make test
-      # - name: Scitra tests
-      #   if: steps.build.conclusion == 'success'
-      #   run: make test-scitra
-      # - name: Interposer tests
-      #   if: steps.build.conclusion == 'success'
-      #   run: make test-interposer
+      - name: Check out the source repository
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - name: Install dependencies
+        run: >
+          sudo apt-get install -y
+          libboost-dev
+          libboost-json-dev
+          libc-ares-dev
+          libcap-dev
+          libgrpc++-dev
+          libmnl-dev
+          libncurses-dev
+          libprotobuf-dev
+          libre2-dev
+          libtomlplusplus-dev
+          pandoc
+          protobuf-compiler
+          protobuf-compiler-grpc
+      - name: Configure
+        run: |
+          mkdir build
+          cmake -G 'Ninja Multi-Config' -B build
+      - name: Build
+        id: build
+        run: cmake --build build --config Debug
+      - name: SCION++ tests
+        if: steps.build.conclusion == 'success'
+        run: make test
+      - name: Scitra tests
+        if: steps.build.conclusion == 'success'
+        run: make test-scitra
+      - name: Interposer tests
+        if: steps.build.conclusion == 'success'
+        run: make test-interposer
       - name: Checkout SCION
         uses: actions/checkout@v6
         with:
@@ -66,14 +66,18 @@ jobs:
       - name: Install SCION dependencies
         working-directory: '${{ github.workspace }}/scion'
         run: cat tools/env/debian/pkgs.txt | sudo apt-get install -y $(xargs)
-      - name: Disable Bezel remote cache
+      - name: Disable Bazel remote cache
         working-directory: '${{ github.workspace }}/scion'
         run: sed '/remote_cache/s/^/#/g' .bazelrc | sponge .bazelrc
       - name: Build SCION
         working-directory: '${{ github.workspace }}/scion'
-        run: bazel build //:scion
-      # - name: Run integration tests
-      #   run: make SCION_ROOT=${{ github.workspace }}/scion test-integration
+        run: |
+          bazel build //:scion
+          bazel build //:scion-topo
+          tar xf bazel-bin/scion.tar -C bin
+          tar xf bazel-bin/scion-topo.tar -C bin
+      - name: Run integration tests
+        run: make SCION_ROOT=${{ github.workspace }}/scion test-integration
 
   unit-tests-windows:
     name: Run unit tests (Windows)

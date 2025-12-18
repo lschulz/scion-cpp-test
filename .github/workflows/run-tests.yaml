@@ -53,11 +53,11 @@ jobs:
           path: 'scion'
           ref: v0.14.0
       - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@latest
+        uses: bazel-contrib/setup-bazel@0.16.0
         with:
           bezelisk-version: v1.19.0
       - name: Set up Python
-        uses: actions/setup-python@latest
+        uses: actions/setup-python@v6.1.0
         with:
           python-version: '3.12'
       - name: Install Python dependencies

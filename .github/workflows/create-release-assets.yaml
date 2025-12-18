@@ -39,7 +39,7 @@ jobs:
       - name: Combine checksum files
         run: cat out/*.sha256 > out/checksum.sha256
       - name: Upload release assets
-        uses:
+        uses: softprops/action-gh-release@v2.5.0
         with:
           files: |
             out/*.deb

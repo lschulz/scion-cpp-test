@@ -6,8 +6,8 @@ on:
   pull_request:
 
 jobs:
-  unit-tests-linux:
-    name: Run unit tests (Linux)
+  tests-linux:
+    name: Run tests (Linux)
     runs-on: ubuntu-24.04
     steps:
       - name: Check out the source repository
@@ -46,6 +46,19 @@ jobs:
       - name: Interposer tests
         if: steps.build.conclusion == 'success'
         run: make test-interposer
+      - name: Checkout SCION
+        uses: actions/checkout@v6
+        with:
+          repository: 'scionproto/scion'
+          path: 'scion'
+        ref: v0.14.0
+      - name: Build SCION
+        working-directory: '${{ github.workspace }}/scion'
+        run: >
+          CGO_ENABLED=0 go build -o bin ./router/... ./control/... ./dispatcher/... ./daemon/...
+          ./scion/... ./scion-pki/...
+      - name: Run integration tests
+        run: make SCION_ROOT=${{ github.workspace }}/scion test-integration
 
   unit-tests-windows:
     name: Run unit tests (Windows)
@@ -64,12 +77,13 @@ jobs:
         uses: lukka/run-vcpkg@v11
         with:
           vcpkgGitCommitId: a20d95d3c76906363896754eb1cc93db2a694f16
-      - name: Build
-        id: build
+      - name: Configure
         uses: lukka/run-cmake@v10
         with:
           configurePreset: vcpkg-vs
-          buildPresetAdditionalArgs: "['--config Debug']"
+      - name: Build
+        id: build
+        run: cmake --build build --config Debug
       - name: SCION++ tests
         if: steps.build.conclusion == 'success'
         run: .\build\Debug\unit-tests.exe .\tests

@@ -27,7 +27,6 @@ jobs:
           libprotobuf-dev
           libre2-dev
           libtomlplusplus-dev
-          ninja-build
           pandoc
           protobuf-compiler
           protobuf-compiler-grpc
@@ -51,6 +50,9 @@ jobs:
   unit-tests-windows:
     name: Run unit tests (Windows)
     runs-on: windows-latest
+    # Disabled because building gRPC with vcpkg consumes too many resources
+    # See: https://github.com/microsoft/vcpkg/issues/43603
+    # if: false
     steps:
       - name: Check out the source repository
         uses: actions/checkout@v6
@@ -70,7 +72,7 @@ jobs:
           buildPresetAdditionalArgs: "['--config Debug']"
       - name: SCION++ tests
         if: steps.build.conclusion == 'success'
-        run: make test
+        run: .\build\Debug\unit-tests.exe .\tests
       - name: Scitra tests
         if: steps.build.conclusion == 'success'
-        run: make test-scitra
+        run: .\build\scitra\Debug\scitra-tests.exe .\scitra\tests

@@ -1,0 +1,46 @@
+name: Create release assets
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+    name: Create release assets
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the source repository
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - name: Install dependencies
+        run: >
+          sudo apt-get install -y
+          libboost-dev
+          libboost-json-dev
+          libc-ares-dev
+          libcap-dev
+          libgrpc++-dev
+          libmnl-dev
+          libncurses-dev
+          libprotobuf-dev
+          libre2-dev
+          libtomlplusplus-dev
+          pandoc
+          protobuf-compiler
+          protobuf-compiler-grpc
+      - name: Configure
+        run: |
+          mkdir build
+          cmake -G 'Ninja Multi-Config' -B build -DCPACK_SET_DESTDIR=ON -DCMAKE_INSTALL_PREFIX=/ -DRELEASE=YES
+      - name: Build DEB packages
+        run: make deb
+      - name: Combine checksum files
+        run: cat out/*.sha256 > out/checksum.sha256
+      - name: Upload release assets
+        uses:
+        with:
+          files: |
+            out/*.deb
+            out/checksum.sha256

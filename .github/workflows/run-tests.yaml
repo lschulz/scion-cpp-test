@@ -3,7 +3,7 @@ name: Run tests
 on:
   push:
     branch: main
-    tags-ignore: ['*']
+    tags-ignore: ['v*']
   pull_request:
 
 jobs:

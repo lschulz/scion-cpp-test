@@ -68,7 +68,7 @@ jobs:
         run: pip install -r tools/env/pip3/requirements.txt
       - name: Install SCION dependencies
         working-directory: '${{ github.workspace }}/scion'
-        run: cat tools/env/debian/pkgs.txt | sudo apt-get install -y $(xargs) socat
+        run: cat tools/env/debian/pkgs.txt | sudo apt-get install -y $(xargs)
       - name: Disable Bazel remote cache
         working-directory: '${{ github.workspace }}/scion'
         run: sed '/remote_cache/s/^/#/g' .bazelrc | sponge .bazelrc
@@ -87,7 +87,7 @@ jobs:
     runs-on: windows-latest
     # Disabled because building gRPC with vcpkg consumes too many resources
     # See: https://github.com/microsoft/vcpkg/issues/43603
-    if: false
+    # if: false
     steps:
       - name: Check out the source repository
         uses: actions/checkout@v6

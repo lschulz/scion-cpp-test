@@ -33,18 +33,16 @@ class _UdpEcho:
     def setUp(self):
         # The server expects a tty, allocate a pseudo-tty with socat.
         self.server = subprocess.Popen([
-            "script", "-q", "-c", "{} {}".format(
+            "socat", "open:/dev/null", "exec:'{} {}',pty".format(
                 self.command,
                 "--sciond 127.0.0.27:30255 --local 127.0.0.1:32000"
-            ), "/dev/null"
-        ], stdin=PIPE, stdout=PIPE, stderr=PIPE, env={"TERM": "xterm-256color"})
-        time.sleep(0.5)
+            )
+        ], env={"TERM": "xterm-256color"}, stderr=DEVNULL)
+        time.sleep(0.2)
 
     def tearDown(self):
         self.server.terminate()
         self.server.wait()
-        print(self.server.stdout.read().decode())
-        print(self.server.stderr.read().decode())
 
     def test_local(self):
         """Client and server are in the same AS"""

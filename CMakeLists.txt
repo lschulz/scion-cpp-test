@@ -134,9 +134,16 @@ add_subdirectory(deps/CLI11)
 
 if (LINUX)
 add_subdirectory(deps/imtui)
+target_compile_options(imtui PRIVATE
+    -Wno-conversion
+)
+target_compile_options(imtui-ncurses PRIVATE
+    -Wno-conversion
+)
 target_compile_options(imgui-for-imtui PRIVATE
     -Wno-unused-variable
     -Wno-deprecated-enum-enum-conversion
+    -Wno-conversion
 )
 endif(LINUX)
 

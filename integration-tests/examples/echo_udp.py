@@ -43,12 +43,11 @@ class _UdpEcho:
     def tearDown(self):
         self.server.terminate()
         self.server.wait()
+        print(self.server.stdout.read().decode())
+        print(self.server.stderr.read().decode())
 
     def test_local(self):
         """Client and server are in the same AS"""
-        if self.server.poll() is not None:
-            print(self.server.stdout.decode())
-            print(self.server.stderr.decode())
         self.assertIsNone(self.server.poll())
         res = subprocess.run([
             self.command,
@@ -62,9 +61,6 @@ class _UdpEcho:
 
     def test_remote(self):
         """Client in a different AS than server"""
-        if self.server.poll() is not None:
-            print(self.server.stdout.decode())
-            print(self.server.stderr.decode())
         self.assertIsNone(self.server.poll())
         res = subprocess.run([
             self.command,

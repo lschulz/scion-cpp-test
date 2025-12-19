@@ -18,7 +18,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     add_compile_options(/W3)
     add_compile_options(/arch:AVX2)
 else()
-    add_compile_options(-Wall -Wextra -Wpedantic -Wno-unused-parameter)
+    add_compile_options(-Wall -Wextra -Wpedantic -Wconversion -Wno-unused-parameter)
     add_compile_options(-fPIC)
 if (MARCH)
     add_compile_options(-march=${MARCH})
@@ -76,7 +76,6 @@ if (Protobuf_FOUND OR WIN32)
 
 else()
 
-    message("Protobuf not found")
     find_package(PkgConfig)
     pkg_check_modules(protobuf REQUIRED IMPORTED_TARGET protobuf)
 
@@ -97,7 +96,6 @@ if (gRPC_FOUND)
 
 else()
 
-    message("gRPC not found")
     find_package(PkgConfig)
     pkg_check_modules(grpc++ REQUIRED IMPORTED_TARGET grpc++)
     pkg_check_modules(grpc REQUIRED IMPORTED_TARGET grpc)

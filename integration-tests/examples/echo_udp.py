@@ -37,7 +37,7 @@ class _UdpEcho:
                 self.command,
                 "--sciond 127.0.0.27:30255 --local 127.0.0.1:32000"
             ), "/dev/null"
-        ], stdout=PIPE, stderr=PIPE)
+        ], stdin=PIPE, stdout=PIPE, stderr=PIPE, env={"TERM": "xterm-256color"})
         time.sleep(0.5)
 
     def tearDown(self):

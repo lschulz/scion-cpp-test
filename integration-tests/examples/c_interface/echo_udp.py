@@ -37,7 +37,7 @@ class _UdpEcho:
                 self.command,
                 "--sciond 127.0.0.27:30255 --local 127.0.0.1:32000"
             ), "/dev/null"
-        ], stdout=DEVNULL, stderr=DEVNULL)
+        ], stdout=PIPE, stderr=PIPE)
         time.sleep(0.5)
 
     def tearDown(self):
@@ -46,6 +46,9 @@ class _UdpEcho:
 
     def test_local(self):
         """Client and server are in the same AS"""
+        if self.server.poll() is not None:
+            print(self.server.stdout.decode())
+            print(self.server.stderr.decode())
         self.assertIsNone(self.server.poll())
         res = subprocess.run([
             self.command,
@@ -59,6 +62,9 @@ class _UdpEcho:
 
     def test_remote(self):
         """Client in a different AS than server"""
+        if self.server.poll() is not None:
+            print(self.server.stdout.decode())
+            print(self.server.stderr.decode())
         self.assertIsNone(self.server.poll())
         res = subprocess.run([
             self.command,

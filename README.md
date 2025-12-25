@@ -110,6 +110,11 @@ cmake -G 'Ninja Multi-Config' -B build -DCPACK_SET_DESTDIR=ON -DCMAKE_INSTALL_PR
 make deb
 ```
 
+By default, the packages have a pre-release version number of the format `major.minor.patch-commit`.
+Set the CMake cache variable `RELASE=YES` to build release packages. The deb packages can also be
+build in a Docker container by invoking the make target `deb-docker`. Packets build this way are
+marked as release versions.
+
 ### Unit Tests
 
 Running the unit tests:

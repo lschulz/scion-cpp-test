@@ -15,7 +15,9 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    add_compile_options(/W3)
+    # Disabled warnings:
+    # C4146 - unary minus operator applied to unsigned type, result still unsigned
+    add_compile_options(/W3 /wd4146)
     add_compile_options(/arch:AVX2)
 else()
     add_compile_options(-Wall -Wextra -Wpedantic -Wconversion -Wno-unused-parameter)
